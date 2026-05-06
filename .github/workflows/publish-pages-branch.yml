@@ -1,0 +1,43 @@
+name: Publish built frontend to Pages branch
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-branch
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Verify committed frontend build exists
+        run: test -f frontend/dist/index.html
+
+      - name: Prepare static site
+        run: |
+          rm -rf /tmp/spritely-pages
+          mkdir -p /tmp/spritely-pages
+          cp -R frontend/dist/. /tmp/spritely-pages/
+          touch /tmp/spritely-pages/.nojekyll
+
+      - name: Publish to github-pages-deploy branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin github-pages-deploy || true
+          git checkout --orphan github-pages-deploy
+          git rm -rf . || true
+          cp -R /tmp/spritely-pages/. .
+          git add .
+          git commit -m "Publish built frontend to GitHub Pages" || echo "No changes to publish"
+          git push -f origin github-pages-deploy
