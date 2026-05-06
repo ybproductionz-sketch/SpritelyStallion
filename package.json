@@ -1,0 +1,15 @@
+{
+  "name": "ai-video-forge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub-deployable AI video generation control room for LTX-2, Wan 2.2, and Mochi workflows.",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "install:all": "npm install --prefix frontend && npm install --prefix backend",
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
+    "start": "npm run start --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

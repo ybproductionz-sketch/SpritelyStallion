@@ -1,0 +1,9 @@
+{
+  "_comment": "Replace this file with an API-format ComfyUI workflow exported from your Mochi graph. Keep these markers inside text/number fields: {{PROMPT}}, {{NEGATIVE_PROMPT}}, {{SEED}}, {{WIDTH}}, {{HEIGHT}}, {{FPS}}, {{FRAMES}}, {{STEPS}}, {{IMAGE_URL}}.",
+  "1": {
+    "class_type": "Note",
+    "inputs": {
+      "text": "Mochi placeholder. Export a real ComfyUI API workflow and paste it here. Prompt: {{PROMPT}} Negative: {{NEGATIVE_PROMPT}} Seed: {{SEED}} Size: {{WIDTH}}x{{HEIGHT}} FPS: {{FPS}} Frames: {{FRAMES}} Steps: {{STEPS}} Image: {{IMAGE_URL}}"
+    }
+  }
+}
