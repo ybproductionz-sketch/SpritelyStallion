@@ -4,8 +4,8 @@ services:
     env: node
     plan: free
     rootDir: backend
-    buildCommand: npm install && npm run build
-    startCommand: npm run start
+    buildCommand: npm install --no-audit --no-fund --legacy-peer-deps
+    startCommand: npx tsx src/server.ts
     envVars:
       - key: PORT
         value: 8787
