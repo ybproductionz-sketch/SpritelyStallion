@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: spritelystallion-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: PORT
+        value: 8787
+      - key: CORS_ORIGIN
+        value: https://ybproductionz-sketch.github.io
+      - key: LTX_API_KEY
+        sync: false
+      - key: LTX_API_BASE_URL
+        value: https://api.ltx.video
+      - key: LTX_API_ENDPOINT
+        value: /v1/generations/video
+      - key: LTX_STATUS_ENDPOINT_TEMPLATE
+        value: /v1/generations/video/{{JOB_ID}}
+      - key: COMFY_BASE_URL
+        value: http://127.0.0.1:8188
+      - key: COMFY_CLIENT_ID
+        value: ai-video-forge
