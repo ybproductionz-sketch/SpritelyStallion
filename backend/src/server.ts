@@ -14,14 +14,33 @@ const app = express();
 app.use(cors({ origin: config.corsOrigin === '*' ? true : config.corsOrigin }));
 app.use(express.json({ limit: '12mb' }));
 
+function publicConfigStatus() {
+  const comfyLooksLocal = config.comfyBaseUrl.includes('127.0.0.1') || config.comfyBaseUrl.includes('localhost');
+  return {
+    ltx: {
+      configured: Boolean(config.ltxApiKey),
+      message: config.ltxApiKey ? 'LTX API key is configured.' : 'LTX_API_KEY is missing in Render environment variables.'
+    },
+    comfy: {
+      configured: Boolean(config.comfyBaseUrl) && !comfyLooksLocal,
+      baseUrl: config.comfyBaseUrl,
+      message: comfyLooksLocal
+        ? 'COMFY_BASE_URL points to localhost. Render cannot reach your personal computer. Use a public ComfyUI/RunPod URL.'
+        : 'ComfyUI base URL is configured.'
+    }
+  };
+}
+
+app.get('/', (_req, res) => {
+  res.type('html').send(`<!doctype html><html><head><title>SpritelyStallion Backend</title></head><body style="font-family:system-ui;background:#080810;color:#f7f2e8;padding:32px"><h1>SpritelyStallion Backend</h1><p>Backend is running.</p><p>Health: <a style="color:#ffd88a" href="/api/health">/api/health</a></p></body></html>`);
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'ai-video-forge-backend',
-    adapters: {
-      ltx: Boolean(config.ltxApiKey),
-      comfy: config.comfyBaseUrl
-    }
+    port: config.port,
+    adapters: publicConfigStatus()
   });
 });
 
@@ -74,9 +93,13 @@ app.post('/api/generate', async (req, res, next) => {
     } catch (adapterError) {
       const failed = await updateJob(id, {
         status: 'failed',
-        message: adapterError instanceof Error ? adapterError.message : 'Model adapter failed.'
+        message: adapterError instanceof Error ? adapterError.message : 'Model adapter failed.',
+        raw: {
+          adapter: provider,
+          config: publicConfigStatus()
+        }
       });
-      res.status(500).json(failed);
+      res.status(200).json(failed);
     }
   } catch (error) {
     next(error);
